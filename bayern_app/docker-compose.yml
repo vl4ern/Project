@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+    db:
+        image: postgres:15-alpine
+        container_name: bayern-postgres
+        restart: always
+        ports:
+            - "5432:5432"
+
+        environment:
+            POSTGRES_USER: bayern_admin
+            POSTGRES_PASSWORD: bay1900ern
+            POSTGRES_DB: bayern_stats_db
+
+        volumes:
+            - postgres_data:/var/lib/postresql/data
+
+volumes:
+    postgres_data:
