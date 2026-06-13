@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 # Подключаем наш новый роутер
 from src.api.v1 import players
+from src.api.v1 import matches
 
 app = FastAPI(
     title="FC Bayern Munich API",
@@ -10,3 +11,4 @@ app = FastAPI(
 
 # Подключаем роутер к главному приложению
 app.include_router(players.router)
+app.include_router(matches.router)
