@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FC Bayern Stats</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans text-gray-800 p-8">
+
+    <div class="max-w-4xl mx-auto">
+        <!-- Красивый заголовок -->
+        <div class="bg-red-600 text-white p-6 rounded-t-lg shadow-md flex justify-between items-center">
+            <h1 class="text-3xl font-bold tracking-wider">FC BAYERN MÜNCHEN</h1>
+            <span class="text-sm uppercase font-semibold tracking-widest">Squad Stats</span>
+        </div>
+        <!-- Блок формы добавления игрока -->
+        <div class="bg-white p-6 shadow-md mb-6">
+            <h2 class="text-lg font-semibold text-gray-700 mb-4">Add New Player</h2>
+            
+            <!-- Сама форма (пока без экшена, просто визуальная часть) -->
+            <form class="flex gap-4 items-end">
+                <div class="flex-1">
+                    <label class="block text-sm font-medium text-gray-600 mb-1">Name</label>
+                    <input type="text" name="name" placeholder="e.g. Jamal Musiala" 
+                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500">
+                </div>
+                
+                <div class="w-24">
+                    <label class="block text-sm font-medium text-gray-600 mb-1">Number</label>
+                    <input type="number" name="number" placeholder="42" 
+                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500">
+                </div>
+
+                <div class="flex-1">
+                    <label class="block text-sm font-medium text-gray-600 mb-1">Position</label>
+                    <select name="position" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 bg-white">
+                        <option value="Goalkeeper">Goalkeeper</option>
+                        <option value="Defender">Defender</option>
+                        <option value="Midfielder">Midfielder</option>
+                        <option value="Forward">Forward</option>
+                        <option value="Winger">Winger</option>
+                    </select>
+                </div>
+
+                <button type="submit" 
+                        class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-6 rounded-lg transition duration-200">
+                    Add
+                </button>
+            </form>
+        </div>
+        <!-- Конец блока формы -->
+        <!-- Таблица -->
+        <div class="bg-white shadow-md rounded-b-lg overflow-hidden">
+            <table class="min-w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-200 text-gray-700 uppercase text-sm leading-normal">
+                        <th class="py-3 px-6 border-b">Number</th>
+                        <th class="py-3 px-6 border-b">Name</th>
+                        <th class="py-3 px-6 border-b">Position</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-600 text-sm font-light">
+                    
+                    <!-- ТУТ ДОЛЖЕН НАЧИНАТЬСЯ ТВОЙ ЦИКЛ JINJA -->
+                    {% for player in players %}
+                    <tr class="border-b border-gray-200 hover:bg-red-50 transition duration-150">
+                        <td class="py-3 px-6 font-bold text-red-600"> {{ player.number }} </td>
+                        <td class="py-3 px-6 font-medium text-gray-900"> {{ player.name }} </td>
+                        <td class="py-3 px-6"> {{ player.position }} </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="3">No players found in database. Add them via API!</td>
+                    </tr>
+                    {% endfor %}
+                    <!-- ТУТ ДОЛЖНО БЫТЬ УСЛОВИЕ ELSE И ЗАКРЫТИЕ ЦИКЛА ENDFOR -->
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+</html>
