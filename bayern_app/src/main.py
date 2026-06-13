@@ -1,10 +1,6 @@
 from fastapi import FastAPI
-from src.db.database import Base, engine
 # Подключаем наш новый роутер
 from src.api.v1 import players
-
-# Создаем таблицы (позже мы заменим это на миграции)
-Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="FC Bayern Munich API",
