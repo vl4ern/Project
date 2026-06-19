@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from src.db.database import SessionLocal
 from src.db import models
 from src.schemas import users as schemas
-from src.core.security import get_password_hash
+from src.core.security import get_password_hash, verify_password, create_access_token
 
 router = APIRouter(prefix="/users", tags=["Users (Security)"])
 
@@ -46,3 +46,16 @@ def register_user(user_in: schemas.UserCreate, db: Session = Depends(get_db)):
 
     # 5. Возвращаем юзера (FastAPI пропустит его через UserResponse и удалит пароль из ответа)
     return new_user
+
+@router.post("/login", response_model=schemas.TokenResponse)
+def login_user(user_in: schemas.UserCreate, db: Session = Depends(get_db)):
+    email_user = db.query(models.User).filter(models.User.email == user_in.email).first()
+    if not email_user or not verify_password(user_in.password, email_user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, 
+            detail="Incorrect email or password"
+        )
+    
+    access_token = create_access_token(data={"sub": email_user.email})
+
+    return {"access_token": access_token, "token_type": "bearer"}
