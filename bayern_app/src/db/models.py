@@ -11,7 +11,7 @@ class Player(Base):
     position = Column(String)
 
 class Match(Base):
-    __tablename__ = "match"
+    __tablename__ = "matches"
 
     id = Column(Integer, primary_key=True, index=True)
     opponent = Column(String)
@@ -38,3 +38,29 @@ class Wallet(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), unique=True, index=True)
     balance = Column(Float, default=0.0)
+
+class Seat(Base):
+    """Модель конкретного места на стадионе для конкретного матча"""
+    __tablename__ = "seats"
+
+    id = Column(Integer, primary_key=True, index=True)
+    match_id = Column(Integer, ForeignKey("matches.id"), index=True) # Привязка к матчу
+    
+    # Чтобы фанат понимал, где он сидит
+    sector = Column(String) # Например: "A1"
+    row = Column(Integer)   # Ряд
+    number = Column(Integer) # Место
+    
+    price = Column(Float, nullable=False) # Цена именно этого места
+    is_available = Column(Boolean, default=True) # Свободно ли оно?
+
+class Ticket(Base):
+    """Модель купленного билета (Связывает Юзера, Матч и Место)"""
+    __tablename__ = "tickets"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), index=True)
+    match_id = Column(Integer, ForeignKey("matches.id"), index=True)
+    seat_id = Column(Integer, ForeignKey("seats.id"), unique=True) # Одно место = Строго один билет!
+    
+    purchase_time = Column(DateTime, default=datetime.utcnow)
