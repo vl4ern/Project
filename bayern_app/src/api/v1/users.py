@@ -40,18 +40,24 @@ def register_user(user_in: schemas.UserCreate, db: Session = Depends(get_db)):
         hashed_password=hashed_pw
     )
 
-    # 4. Сохраняем в базу (Транзакция)
+    # 4. Добавляем юзера в сессию (но пока НЕ коммитим!)
     db.add(new_user)
+    # Вызываем flush, чтобы база данных сгенерировала ID для new_user,
+    # но при этом изменения еще не сохранились намертво (можно откатить).
+    db.flush()
+    # 5. Создаем пустой кошелек для этого нового юзера (баланс по умолчанию 0.0)
+    new_wallet = models.Wallet(user_id=new_user.id)
+    db.add(new_wallet)
     db.commit()
     db.refresh(new_user)
 
-    # 5. Возвращаем юзера (FastAPI пропустит его через UserResponse и удалит пароль из ответа)
+    # 6. Сохраняем всё вместе (User + Wallet) за один шаг!
     return new_user
 
 @router.post("/login", response_model=schemas.TokenResponse)
 def login_user(from_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     email_user = db.query(models.User).filter(models.User.email == from_data.username).first()
-    
+
     if not email_user or not verify_password(from_data.password, email_user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, 

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Date, Boolean, DateTime
+from sqlalchemy import Column, Integer, String, Date, Boolean, DateTime, ForeignKey, Float
 from src.db.database import Base
 from datetime import datetime
 
@@ -32,3 +32,9 @@ class User(Base):
     is_active = Column(Boolean, default=True)
     # Время создания аккаунта (для аудита)
     created_at = Column(DateTime, default=datetime.utcnow)
+
+class Wallet(Base):
+    __tablename__ = "wallets"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), unique=True, index=True)
+    balance = Column(Float, default=0.0)

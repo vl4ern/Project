@@ -2,7 +2,8 @@ from fastapi import FastAPI
 # Подключаем наш новый роутер
 from src.api.v1 import players
 from src.api.v1 import matches
-from src.api.v1 import players, matches, pages, users
+from src.api.v1 import players, matches, pages, users, wallets
+
 
 
 app = FastAPI(
@@ -16,3 +17,4 @@ app.include_router(players.router)
 app.include_router(matches.router)
 app.include_router(pages.router)
 app.include_router(users.router)
+app.include_router(wallets.router)
